@@ -1,8 +1,11 @@
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+
 namespace WFCSudokuGenerator
 {
     public partial class Form1 : Form
     {
-        Board board;
+        public Board board;
 
         public Form1()
         {
@@ -24,7 +27,7 @@ namespace WFCSudokuGenerator
                     button.Text = "0";
                     button.Size = new Size(40,40);
                     ActiveForm.Controls.Add(button);
-                    tiles[i2,i] = new Tile(new System.Numerics.Vector2(i2, i), button);
+                    tiles[i2,i] = new Tile(this,new System.Numerics.Vector2(i2, i), button);
                     button.Click += tiles[i2, i].PressButton;
                     infoBox.Text += Environment.NewLine + $"New Tile: ({i2}|{i})";
                 }
@@ -41,7 +44,12 @@ namespace WFCSudokuGenerator
 
         private void UpdateStates()
         {
+           
+        }
 
+        public static void Log(string message)
+        {
+            Debug.WriteLine(message);
         }
     }
 }
