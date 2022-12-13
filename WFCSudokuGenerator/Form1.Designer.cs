@@ -67,6 +67,7 @@
             this.infoBox.Location = new System.Drawing.Point(475, 125);
             this.infoBox.Multiline = true;
             this.infoBox.Name = "infoBox";
+            this.infoBox.ReadOnly = true;
             this.infoBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.infoBox.Size = new System.Drawing.Size(277, 292);
             this.infoBox.TabIndex = 3;
@@ -78,7 +79,7 @@
             this.newBoard.Size = new System.Drawing.Size(277, 29);
             this.newBoard.TabIndex = 4;
             this.newBoard.Text = "New Board";
-            this.newBoard.UseVisualStyleBackColor = true;
+            this.newBoard.UseVisualStyleBackColor = false;
             this.newBoard.Click += new System.EventHandler(this.newBoard_Click);
             // 
             // Form1

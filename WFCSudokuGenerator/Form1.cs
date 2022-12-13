@@ -14,8 +14,11 @@ namespace WFCSudokuGenerator
 
         public Board GenerateBoard()
         {
+            if (board != null)
+                DeleteBoard();
+
             infoBox.Text += "Generating Board...";
-            Tile[,] tiles = new Tile[10, 10];
+            Tile[,] tiles = new Tile[9, 9];
             Point temp = new Point(0, 40);
             for (int i = 0; i < 9; i++)
             {
@@ -26,20 +29,25 @@ namespace WFCSudokuGenerator
                     button.Location = temp;
                     button.Text = "0";
                     button.Size = new Size(40,40);
+                    button.BackColor= Color.Gray;
                     ActiveForm.Controls.Add(button);
                     tiles[i2,i] = new Tile(this,new System.Numerics.Vector2(i2, i), button);
-                    button.Click += tiles[i2, i].PressButton;
+                    //button.MouseDoubleClick += tiles[i2, i].PressButton;
+                    button.Click += (x, y) => TileInfo(button);
                     infoBox.Text += Environment.NewLine + $"New Tile: ({i2}|{i})";
                 }
                 temp = new Point(0, temp.Y + 45);
             }
 
-            return new Board(tiles);
+            return new Board(tiles, this);
         }
 
         private void newBoard_Click(object sender, EventArgs e)
         {
             board = GenerateBoard();
+            collapseButton.Click += (x,y) => board.Collapse();
+            backButton.Click += (x,y) => board.Load(board.log.Count - 5);
+            startstopButton.Click += (x, y) => board.StartStop();
         }
 
         private void UpdateStates()
@@ -47,9 +55,26 @@ namespace WFCSudokuGenerator
            
         }
 
-        public static void Log(string message)
+        void DeleteBoard()
         {
-            Debug.WriteLine(message);
+            board.waveFormRunning = false;
+
+            foreach(Tile t in board.tiles)
+            {
+                this.Controls.Remove(t.button);
+            }
+
+            board = null;
+        }
+
+        void TileInfo(Button b)
+        {
+            Tile[] temp = new Tile[board.tiles.Length];
+            temp = board.tiles.Cast<Tile>().ToArray();
+            Tile t = temp.Where(x => x.button == b).ElementAt(0);
+
+            string Info = Environment.NewLine + $"Position:{t.position}\r\nPossible States:{string.Join('-', t.possibleStates)}\r\nEntropy:{t.entropy}\r\nEntropyReduction:{t.entropyReduction}";
+            infoBox.Text += Info;
         }
     }
 }
