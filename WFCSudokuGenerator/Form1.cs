@@ -2,12 +2,14 @@ namespace WFCSudokuGenerator
 {
     public partial class Form1 : Form
     {
+        Board board;
+
         public Form1()
         {
             InitializeComponent();
         }
 
-        public Tile[,] GenerateBoard()
+        public Board GenerateBoard()
         {
             infoBox.Text += "Generating Board...";
             Tile[,] tiles = new Tile[10, 10];
@@ -21,19 +23,25 @@ namespace WFCSudokuGenerator
                     button.Location = temp;
                     button.Text = "0";
                     button.Size = new Size(40,40);
-                    Form1.ActiveForm.Controls.Add(button);
+                    ActiveForm.Controls.Add(button);
                     tiles[i2,i] = new Tile(new System.Numerics.Vector2(i2, i), button);
+                    button.Click += tiles[i2, i].PressButton;
                     infoBox.Text += Environment.NewLine + $"New Tile: ({i2}|{i})";
                 }
                 temp = new Point(0, temp.Y + 45);
             }
 
-            return tiles;
+            return new Board(tiles);
         }
 
         private void newBoard_Click(object sender, EventArgs e)
         {
-            GenerateBoard();
+            board = GenerateBoard();
+        }
+
+        private void UpdateStates()
+        {
+
         }
     }
 }
