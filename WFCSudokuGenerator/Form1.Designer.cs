@@ -33,6 +33,8 @@
             this.collapseButton = new System.Windows.Forms.Button();
             this.infoBox = new System.Windows.Forms.TextBox();
             this.newBoard = new System.Windows.Forms.Button();
+            this.exportButton = new System.Windows.Forms.Button();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.SuspendLayout();
             // 
             // backButton
@@ -74,7 +76,7 @@
             // 
             // newBoard
             // 
-            this.newBoard.Location = new System.Drawing.Point(475, 55);
+            this.newBoard.Location = new System.Drawing.Point(475, 20);
             this.newBoard.Name = "newBoard";
             this.newBoard.Size = new System.Drawing.Size(277, 29);
             this.newBoard.TabIndex = 4;
@@ -82,11 +84,21 @@
             this.newBoard.UseVisualStyleBackColor = false;
             this.newBoard.Click += new System.EventHandler(this.newBoard_Click);
             // 
+            // exportButton
+            // 
+            this.exportButton.Location = new System.Drawing.Point(475, 55);
+            this.exportButton.Name = "exportButton";
+            this.exportButton.Size = new System.Drawing.Size(277, 29);
+            this.exportButton.TabIndex = 5;
+            this.exportButton.Text = "Export";
+            this.exportButton.UseVisualStyleBackColor = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(855, 474);
+            this.Controls.Add(this.exportButton);
             this.Controls.Add(this.newBoard);
             this.Controls.Add(this.infoBox);
             this.Controls.Add(this.collapseButton);
@@ -106,5 +118,7 @@
         private Button collapseButton;
         private TextBox infoBox;
         private Button newBoard;
+        private Button exportButton;
+        private SaveFileDialog saveFileDialog;
     }
 }

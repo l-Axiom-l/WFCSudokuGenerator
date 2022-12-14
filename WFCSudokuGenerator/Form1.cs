@@ -7,6 +7,11 @@ namespace WFCSudokuGenerator
     {
         public Board board;
 
+        EventHandler collapseEvent;
+        EventHandler backEvent;
+        EventHandler stopEvent;
+        EventHandler exportEvent;
+
         public Form1()
         {
             InitializeComponent();
@@ -19,7 +24,7 @@ namespace WFCSudokuGenerator
 
             infoBox.Text += "Generating Board...";
             Tile[,] tiles = new Tile[9, 9];
-            Point temp = new Point(0, 40);
+            Point temp = new Point(0, 18);
             for (int i = 0; i < 9; i++)
             {
                 for (int i2 = 0; i2 < 9; i2++)
@@ -32,8 +37,8 @@ namespace WFCSudokuGenerator
                     button.BackColor= Color.Gray;
                     ActiveForm.Controls.Add(button);
                     tiles[i2,i] = new Tile(this,new System.Numerics.Vector2(i2, i), button);
-                    //button.MouseDoubleClick += tiles[i2, i].PressButton;
-                    button.Click += (x, y) => TileInfo(button);
+                    tiles[i2, i].e = (x, y) => TileInfo(button);
+                    button.Click += tiles[i2, i].e;
                     infoBox.Text += Environment.NewLine + $"New Tile: ({i2}|{i})";
                 }
                 temp = new Point(0, temp.Y + 45);
@@ -45,14 +50,16 @@ namespace WFCSudokuGenerator
         private void newBoard_Click(object sender, EventArgs e)
         {
             board = GenerateBoard();
-            collapseButton.Click += (x,y) => board.Collapse();
-            backButton.Click += (x,y) => board.Load(board.log.Count - 5);
-            startstopButton.Click += (x, y) => board.StartStop();
-        }
 
-        private void UpdateStates()
-        {
-           
+            collapseEvent = (x,y) => board.Collapse();
+            backEvent = (x,y) => board.Load(board.log.Count - 5);
+            stopEvent = (x, y) => board.StartStop();
+            exportEvent = (x, y) => board.Export(saveFileDialog);
+
+            collapseButton.Click += collapseEvent;
+            backButton.Click += backEvent;
+            startstopButton.Click += stopEvent;
+            exportButton.Click += exportEvent;
         }
 
         void DeleteBoard()
@@ -71,9 +78,14 @@ namespace WFCSudokuGenerator
 
             foreach (Tile t in board.tiles)
             {
+                t.button.Click -= t.e;
                 this.Controls.Remove(t.button);
             }
 
+            collapseButton.Click -= collapseEvent;
+            backButton.Click -= backEvent;
+            startstopButton.Click -= stopEvent;
+            exportButton.Click -= exportEvent;
             board = null;
         }
 

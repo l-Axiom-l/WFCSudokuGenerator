@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace WFCSudokuGenerator
 {
@@ -33,7 +34,11 @@ namespace WFCSudokuGenerator
             while(!canceled)
             {
                 if (!waveFormRunning)
+                {
+                    await Task.Delay(100);
                     continue;
+                }
+
 
                 if(stop)
                 {
@@ -57,7 +62,7 @@ namespace WFCSudokuGenerator
                     stop = true;
                     Debug.WriteLine(log.Count);
                     //log.RemoveRange(log.Count - 11, 10);
-                    await Task.Run(() => Load(log.Count - 5));
+                    await Task.Run(() => Load(log.Count - 3));
                     stop = false;
                 }
 
@@ -67,6 +72,7 @@ namespace WFCSudokuGenerator
 
         public void StartStop(bool wfr = true)
         {
+            Debug.WriteLine(waveForm.IsAlive);
             waveFormRunning = wfr;
 
             if (waveFormRunning)
@@ -96,7 +102,7 @@ namespace WFCSudokuGenerator
             temp = temp.TakeLast(new Random().Next(1, 15)).OrderByDescending(x => x.entropyReduction).ToArray();
             temp = temp.Concat(temp.TakeLast(5).ToArray()).ToArray();
 
-            if (new Random().Next(0, 100) > 90)
+            if (new Random().Next(0, 100) > 94)
                 temp[new Random().Next(0, temp.Length)].Collapse(tiles);
             else
                 temp[new Random().Next(0, temp.Length)].Collapse(tiles);
@@ -142,6 +148,32 @@ namespace WFCSudokuGenerator
             }
             main = main.TrimEnd('\n');
             return main;
+        }
+
+        public void Export(SaveFileDialog dialog)
+        {
+
+            string temp = "";
+            for(int l = 0; l < 9; l++)
+            {
+                Tile[] T = new Tile[9];
+
+                for(int i = 0; i < 9; i++)
+                {
+                    T[i] = tiles[i, l];
+                }
+
+                temp += String.Join('-',T.Select(x => x.value.ToString()).ToArray()) + Environment.NewLine;
+            }
+
+            temp = temp.TrimEnd('\n');
+
+            dialog.Filter = "Textfile|*.txt";
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                File.WriteAllText(dialog.FileName, temp);
+            }
+
         }
 
         public Tile[] GetDiagonal(int diagonal)

@@ -18,6 +18,7 @@ namespace WFCSudokuGenerator
         public int entropy = 9;
         public int value = 0;
         public int entropyReduction;
+        public EventHandler e;
 
         public Tile(Form1 form, Vector2 position, Button button)
         {
@@ -106,11 +107,6 @@ namespace WFCSudokuGenerator
                 return 2;
             else return 3;
 
-        }
-
-        public void PressButton(object sender, EventArgs e)
-        {
-            Collapse(form.board.tiles);
         }
 
         Vector2 GetSquare()
