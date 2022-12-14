@@ -16,14 +16,17 @@ namespace WFCSudokuGenerator
         public List<string> log = new List<string>();
         public bool waveFormRunning = false;
         public bool stop = true;
-        Thread waveForm;
+        public Thread waveForm;
+        public Thread waveForm2;
 
         public Board(Tile[,] tiles, Form1 form)
         {
             this.tiles = tiles;
             this.form = form;
             waveForm = new Thread(WaveformProcess);
+            waveForm2 = new Thread(WaveformProcess);
             waveForm.Start();
+            waveForm2.Start();
         }
 
         public async void WaveformProcess()
@@ -45,8 +48,11 @@ namespace WFCSudokuGenerator
                 if(temp.All(x => x.state == Tile.State.Fixed))
                 {
                     WaveFormCollapsed();
+                    return;
                 }
                 
+                Collapse();
+
                 if(temp.Any(x => x.entropy == 0))
                 {
                     stop = true;
@@ -56,8 +62,7 @@ namespace WFCSudokuGenerator
                     stop = false;
                 }
 
-                Collapse();
-                await Task.Delay(60);
+                await Task.Delay(80);
             }
         }
 
@@ -77,13 +82,22 @@ namespace WFCSudokuGenerator
 
             Tile[] temp = new Tile[tiles.Length];
             temp = tiles.Cast<Tile>().ToArray();
+
+            Tile[] test = temp.Where(x => x.state == Tile.State.Superposition && x.entropy == 1).ToArray();
+            
+            if(test.Length > 0)
+            {
+                test[new Random().Next(0, test.Length)].Collapse(tiles);
+                return;
+            }
+
             temp = temp.Where(x => x.state == Tile.State.Superposition && x.entropy > 0).ToArray();
             temp = temp.OrderByDescending(x => x.entropy).ToArray();
             temp = temp.TakeLast(20).OrderByDescending(x => x.entropyReduction).ToArray();
             temp = temp.TakeLast(new Random().Next(1, 15)).OrderByDescending(x => x.entropyReduction).ToArray();
             temp = temp.Concat(temp.TakeLast(5).ToArray()).ToArray();
 
-            if (new Random().Next(0, 100) > 95)
+            if (new Random().Next(0, 100) > 90)
                 temp[new Random().Next(0, temp.Length)].Collapse(tiles);
             else
                 temp[new Random().Next(0, temp.Length)].Collapse(tiles);
@@ -162,7 +176,7 @@ namespace WFCSudokuGenerator
         public void WaveFormCollapsed()
         {
             waveFormRunning = false;
-            foreach(var tile in tiles) { tile.button.BackColor = Color.Azure; }
+            foreach(var tile in tiles) { tile.button.BackColor = Color.Azure; tile.button.ForeColor = Color.Blue; }
         }
 
         /// <summary>

@@ -28,6 +28,9 @@ namespace WFCSudokuGenerator
 
         public void Collapse(Tile[,] tiles, int State = 0)
         {
+            Debug.WriteLine("Position:" + position + "/" + possibleStates.Count + "/" + entropy + "/" + state.ToString());
+            Update();
+            Debug.WriteLine("Position:" + position + "/" + possibleStates.Count + "/" + entropy + "/" + state.ToString());
             state = Tile.State.Fixed;
             try
             {
@@ -35,7 +38,7 @@ namespace WFCSudokuGenerator
             }
             catch(Exception ex)
             {
-                Debug.WriteLine(ex + ":" + value);
+                Debug.WriteLine(ex + ":" + value + "/" + string.Join(',', possibleStates) + "/" + entropy);
             }
 
             form.Invoke(() => button.Text = value.ToString());
@@ -217,6 +220,7 @@ namespace WFCSudokuGenerator
 
         public void calculateEntropyReduction(Tile[,] tiles)
         {
+            Update();
             Tile[] LineX = new Tile[9];
             Tile[] LineY = new Tile[9];
             Tile[] Diagonal = new Tile[9];

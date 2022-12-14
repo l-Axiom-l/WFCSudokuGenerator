@@ -59,6 +59,16 @@ namespace WFCSudokuGenerator
         {
             board.waveFormRunning = false;
 
+            try
+            {
+                board.waveForm.Interrupt();
+                board.waveForm2.Interrupt();
+            }
+            catch(Exception ex)
+            {
+
+            }
+
             foreach(Tile t in board.tiles)
             {
                 this.Controls.Remove(t.button);
