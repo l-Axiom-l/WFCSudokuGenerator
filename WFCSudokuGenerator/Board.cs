@@ -16,6 +16,7 @@ namespace WFCSudokuGenerator
         public List<string> log = new List<string>();
         public bool waveFormRunning = false;
         public bool stop = true;
+        public bool canceled = false;
         public Thread waveForm;
         public Thread waveForm2;
 
@@ -24,14 +25,12 @@ namespace WFCSudokuGenerator
             this.tiles = tiles;
             this.form = form;
             waveForm = new Thread(WaveformProcess);
-            waveForm2 = new Thread(WaveformProcess);
             waveForm.Start();
-            waveForm2.Start();
         }
 
         public async void WaveformProcess()
         {
-            while(true)
+            while(!canceled)
             {
                 if (!waveFormRunning)
                     continue;

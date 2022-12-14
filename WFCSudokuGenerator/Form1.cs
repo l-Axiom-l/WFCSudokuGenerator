@@ -61,15 +61,15 @@ namespace WFCSudokuGenerator
 
             try
             {
-                board.waveForm.Interrupt();
-                board.waveForm2.Interrupt();
+                board.canceled = true;
+                Debug.WriteLine(board.waveForm.IsAlive);
             }
             catch(Exception ex)
             {
-
+                Debug.WriteLine(ex);
             }
 
-            foreach(Tile t in board.tiles)
+            foreach (Tile t in board.tiles)
             {
                 this.Controls.Remove(t.button);
             }
