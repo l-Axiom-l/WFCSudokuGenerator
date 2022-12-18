@@ -20,6 +20,7 @@ namespace WFCSudokuGenerator
         public bool canceled = false;
         public Thread waveForm;
         public Thread waveForm2;
+        public int IterationCounter = 1;
 
         public Board(Tile[,] tiles, Form1 form)
         {
@@ -81,6 +82,7 @@ namespace WFCSudokuGenerator
 
         public void Collapse()
         {
+            IterationCounter++;
             log.Add(Save());
             foreach (Tile tile in tiles)
                 tile.calculateEntropyReduction(tiles);
@@ -126,6 +128,7 @@ namespace WFCSudokuGenerator
                 form.Invoke(new Action(() => form.Controls.Add(tile.button)));
                 //form.Invoke(new Action(() => tile.button.Click += tile.PressButton));
             }
+            IterationCounter = int.Parse(temp.Last().Split(':')[1]);
             this.tiles = tiles;
         }
 
@@ -146,6 +149,7 @@ namespace WFCSudokuGenerator
                 string solution = $"{state}-{entropy}-{PossibleStates}-{Value}-{Position}-{ButtonPosition}-{ButtonSize}" + Environment.NewLine;
                 main += solution;
             }
+            main += ("IterationCounter:" + IterationCounter.ToString());
             main = main.TrimEnd('\n');
             return main;
         }
